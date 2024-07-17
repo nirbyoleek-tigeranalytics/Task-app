@@ -11,7 +11,7 @@ const initialState = {
           projects: action.payload,
         };
       case 'FETCH_PROJECTS_FAILURE':
-        return {
+        return { 
           ...state,
           error: action.payload,
         };

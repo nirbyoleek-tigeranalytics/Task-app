@@ -26,18 +26,11 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
-
-      // Assuming your backend returns a token upon successful login
       const token = res.data.token;
-
-      // You can store the token in localStorage or sessionStorage
       localStorage.setItem('token', token);
-
-      // Redirect or navigate to another page
-      window.location.href = '/dashboard'; // Replace with your desired redirect path
+      window.location.href = '/dashboard'; 
     } catch (error) {
       console.error('Login error:', error.message);
-      // Handle error, such as displaying an error message to the user
     }
   };
 
