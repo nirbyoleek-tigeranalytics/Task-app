@@ -1,3 +1,4 @@
+import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjects } from '../../redux/actions/projectActions';
@@ -16,16 +17,34 @@ const ProjectList = () => {
 
   return (
     <div>
-      <h2>Project List</h2>
       {projects.length === 0 ? (
-        <div>No projects found.</div>
+        <Typography variant="body1">No projects found.</Typography>
       ) : (
         projects.map(project => (
-          <div key={project._id}>
-            <h3>{project.name}</h3>
-            <p>{project.description}</p>
-            {/* Add other project details as needed */}
-          </div>
+          <Card key={project._id} variant="outlined" sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                {project.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Description: {project.description}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Start Date: {new Date(project.startDate).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                End Date: {new Date(project.endDate).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Owner: {project.owner}
+              </Typography>
+              {/* Additional project details can be added here */}
+            </CardContent>
+            <CardActions>
+              <Button size="small">Edit</Button>
+              <Button size="small">Delete</Button>
+            </CardActions>
+          </Card>
         ))
       )}
     </div>
