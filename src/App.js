@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Layout/Header';
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ProjectPage from './pages/ProjectPage';
@@ -11,53 +10,37 @@ import TaskPage from './pages/TaskPage';
 import UserPage from './pages/UserPage';
 
 const App = () => {
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+  
+    const role = 'Admin';
+    setUserRole(role);
+  }, []);
+
   return (
     <div>
-      <Header />
+      {userRole === 'Admin' && (
+        <Header isAdmin={true} />
+      )}
+      {userRole === 'User' && (
+        <Header isAdmin={false} />
+      )}
       <main>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <PrivateRoute>
-                <ProjectPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <PrivateRoute>
-                <TaskPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <PrivateRoute>
-                <UserPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/roles"
-            element={
-              <PrivateRoute>
-                <RolePage />
-              </PrivateRoute>
-            }
-          />
+          {userRole === 'Admin' && (
+            <>
+              <Route path="/projects" element={<ProjectPage />} />
+              <Route path="/tasks" element={<TaskPage />} />
+              <Route path="/users" element={<UserPage />} />
+              <Route path="/roles" element={<RolePage />} />
+            </>
+          )}
+          {userRole === 'User' && (
+            <Route path="/dashboard" element={<Dashboard />} />
+          )}
         </Routes>
       </main>
     </div>

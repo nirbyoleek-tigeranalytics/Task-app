@@ -29,9 +29,14 @@ export const createUser = (user, token) => async (dispatch) => {
 };
 
 // Update user action with token
-export const updateUser = (user, token) => async (dispatch) => {
+export const updateUser = (userData, token) => async (dispatch) => {
   try {
-    const response = await axios.put(`http://localhost:5000/api/users/${user.id}`, user, {
+    const { username, email, role } = userData;
+    const response = await axios.put(`http://localhost:5000/api/users/${userData._id}`, {
+      username,
+      email,
+      role,
+    }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -41,7 +46,6 @@ export const updateUser = (user, token) => async (dispatch) => {
     dispatch({ type: 'UPDATE_USER_FAILURE', payload: error.message });
   }
 };
-
 // Delete user action with token
 export const deleteUser = (id, token) => async (dispatch) => {
   try {
