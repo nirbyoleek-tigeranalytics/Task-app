@@ -1,4 +1,5 @@
-import { Button, Grid, Paper, TextField } from '@mui/material';
+import { Button, Grid, Paper, Snackbar, TextField } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createProject } from '../../redux/actions/projectActions';
@@ -8,15 +9,32 @@ const ProjectForm = () => {
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProject({ name, description, startDate, endDate }));
-    setName('');
-    setDescription('');
-    setStartDate('');
-    setEndDate('');
+    dispatch(createProject({ name, description, startDate, endDate }))
+      .then(() => {
+        // Reset form state on successful project creation
+        setName('');
+        setDescription('');
+        setStartDate('');
+        setEndDate('');
+        // Show snackbar for success
+        setSnackbarOpen(true);
+      })
+      .catch((error) => {
+        console.error('Error creating project:', error);
+        // Handle error state or display error message to user
+      });
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -72,6 +90,22 @@ const ProjectForm = () => {
           Create Project
         </Button>
       </form>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000} 
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleSnackbarClose}
+          severity="success"
+        >
+          Project created successfully
+        </MuiAlert>
+      </Snackbar>
     </Paper>
   );
 };
