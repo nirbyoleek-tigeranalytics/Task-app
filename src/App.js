@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Layout/Header';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ProjectPage from './pages/ProjectPage';
@@ -15,13 +16,48 @@ const App = () => {
       <Header />
       <main>
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/projects" element={<ProjectPage />} />
-          <Route path="/tasks" element={<TaskPage />} />
-          <Route path="/users" element={<UserPage />} />
-          <Route path="/roles" element={<RolePage />} />
-          <Route path="/login" element={<Login />} /> 
-          <Route path="/register" element={<Register />} /> 
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <PrivateRoute>
+                <ProjectPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              <PrivateRoute>
+                <TaskPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <UserPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/roles"
+            element={
+              <PrivateRoute>
+                <RolePage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

@@ -27,7 +27,7 @@ const Login = () => {
         password: formData.password,
       });
       const token = res.data.token;
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       window.location.href = '/dashboard'; 
     } catch (error) {
       console.error('Login error:', error.message);
