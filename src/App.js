@@ -5,7 +5,6 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ProjectPage from './pages/ProjectPage';
 import Register from './pages/Register';
-import RolePage from './pages/RolePage';
 import TaskPage from './pages/TaskPage';
 import UserPage from './pages/UserPage';
 
@@ -35,7 +34,7 @@ const App = () => {
               <Route path="/projects" element={<ProjectPage />} />
               <Route path="/tasks" element={<TaskPage />} />
               <Route path="/users" element={<UserPage />} />
-              <Route path="/roles" element={<RolePage />} />
+
             </>
           )}
           {userRole === 'User' && (

@@ -30,9 +30,6 @@ const Header = ({ isAdmin }) => {
             <Button color="inherit" component={Link} to="/users">
               Users
             </Button>
-            <Button color="inherit" component={Link} to="/roles">
-              Roles
-            </Button>
           </>
         )}
         <Button color="inherit" onClick={handleLogout}>

@@ -47,6 +47,28 @@ const initialState = {
           ...state,
           error: action.payload,
         };
+        case 'FETCH_USER_TASKS_SUCCESS':
+      return {
+        ...state,
+        tasks: action.payload,
+      };
+    case 'FETCH_USER_TASKS_FAILURE':
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case 'UPDATE_TASK_STATUS_SUCCESS':
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task._id === action.payload._id ? action.payload : task
+        ),
+      };
+    case 'UPDATE_TASK_STATUS_FAILURE':
+      return {
+        ...state,
+        error: action.payload,
+      };
       default:
         return state;
     }

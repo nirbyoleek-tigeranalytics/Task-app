@@ -61,3 +61,31 @@ export const deleteTask = (id) => async (dispatch) => {
     dispatch({ type: 'DELETE_TASK_FAILURE', payload: error.message });
   }
 };
+export const fetchUserTasks = ( token) => async (dispatch) => {
+  try {
+    const response = await axios.get(`${baseURL}/tasks/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: 'FETCH_USER_TASKS_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'FETCH_USER_TASKS_FAILURE', payload: error.message });
+  }
+};
+export const updateTaskStatus = (taskId, status, token) => async (dispatch) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/tasks/${taskId}/status`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    dispatch({ type: 'UPDATE_TASK_STATUS_SUCCESS', payload: response.data });
+  } catch (error) {
+    dispatch({ type: 'UPDATE_TASK_STATUS_FAILURE', payload: error.message });
+  }
+};
