@@ -1,12 +1,13 @@
-import { Grid } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
-import UserTasks from '../components/Tasks/UserTasks';
+import TaskForm from '../components/Tasks/TaskForm';
+import TaskList from '../components/Tasks/TaskList';
 
 const TaskPage = () => {
   return (
     <Grid container spacing={3}>
       
-      {/* <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6}>
         <Paper elevation={3} sx={{ padding: '20px' }}>
           <Typography variant="h3" component="h3" gutterBottom>
             Create New Task
@@ -21,8 +22,7 @@ const TaskPage = () => {
           </Typography>
           <TaskList />
         </Paper>
-      </Grid> */}
-      <UserTasks/>
+      </Grid>
     </Grid>
   );
 };

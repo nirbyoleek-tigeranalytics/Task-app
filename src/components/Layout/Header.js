@@ -14,11 +14,7 @@ const Header = ({ isAdmin }) => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Task Tracker App
         </Typography>
-        {!isAdmin && (
-          <Button color="inherit" component={Link} to="/dashboard">
-            Dashboard
-          </Button>
-        )}
+       
         {isAdmin && (
           <>
             <Button color="inherit" component={Link} to="/projects">
@@ -30,6 +26,7 @@ const Header = ({ isAdmin }) => {
             <Button color="inherit" component={Link} to="/users">
               Users
             </Button>
+
           </>
         )}
         <Button color="inherit" onClick={handleLogout}>

@@ -1,14 +1,10 @@
 import React from 'react';
+import UserTasks from '../components/Tasks/UserTasks';
 
 const Dashboard = () => {
   return (
     <div>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
+     <UserTasks/>
     </div>
   );
 };

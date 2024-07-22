@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
   
-    const role = 'Admin';
+    const role = sessionStorage.getItem('role');
     setUserRole(role);
   }, []);
 

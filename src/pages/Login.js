@@ -26,9 +26,11 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
-      const token = res.data.token;
+      const { token, role } = res.data; // Extract token and role from response
       sessionStorage.setItem('token', token);
-      window.location.href = '/dashboard'; 
+      sessionStorage.setItem('role', role);
+      window.location.href = role === 'User' ? '/dashboard' : '/projects';
+
     } catch (error) {
       console.error('Login error:', error.message);
     }
