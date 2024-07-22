@@ -21,7 +21,7 @@ const TaskList = () => {
   const [updatedTaskDueDate, setUpdatedTaskDueDate] = useState('');
 
   const statusOptions = ['new', 'in-progress', 'blocked', 'completed', 'not started'];
-  
+
   useEffect(() => {
     console.log('Dispatching fetch tasks, users, and projects');
     dispatch(fetchTasks());
@@ -39,6 +39,7 @@ const TaskList = () => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+
   const handleEditClick = (task) => {
     setCurrentTask(task);
     setUpdatedTaskName(task?.name || '');
@@ -91,7 +92,6 @@ const TaskList = () => {
     }
   };
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrentTask({ ...currentTask, [name]: value });
@@ -106,40 +106,45 @@ const TaskList = () => {
       {tasks.length === 0 ? (
         <Typography variant="body1">No tasks found.</Typography>
       ) : (
-        tasks.map((task) => (
-          task && (
-            <Card key={task.id} variant="outlined" sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {task.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Description: {task.description}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Owner: {task.owner?.username || 'No Owner'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Project: {task.project?.name || 'No Project'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Due Date: {task.dueDate}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Status: {task.status}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button onClick={() => handleEditClick(task)} fullWidth color="primary">
-                  Edit
-                </Button>
-                <Button onClick={() => handleDeleteClick(task)} fullWidth color="error">
-                  Delete
-                </Button>
-              </CardActions>
-            </Card>
-          )
-        ))
+        tasks.map((task) => {
+          // Determine background color based on status
+          const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; // light green background for completed status
+          
+          return (
+            task && (
+              <Card key={task.id} variant="outlined" sx={{ mb: 2, backgroundColor }}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {task.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Description: {task.description}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Owner: {task.owner?.username || 'No Owner'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Project: {task.project?.name || 'No Project'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Due Date: {task.dueDate}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Status: {task.status}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button onClick={() => handleEditClick(task)} fullWidth color="primary">
+                    Edit
+                  </Button>
+                  <Button onClick={() => handleDeleteClick(task)} fullWidth color="error">
+                    Delete
+                  </Button>
+                </CardActions>
+              </Card>
+            )
+          );
+        })
       )}
 
       {/* Edit Task Dialog */}
@@ -162,7 +167,7 @@ const TaskList = () => {
             fullWidth
             margin="normal"
           />
-           <FormControl fullWidth margin="normal">
+          <FormControl fullWidth margin="normal">
             <InputLabel>Status</InputLabel>
             <Select
               value={updatedTaskStatus}

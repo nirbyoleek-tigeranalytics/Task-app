@@ -39,6 +39,7 @@ const UserTasks = () => {
       .then(() => {
         setSnackbarMessage('Task updated successfully');
         setOpenSnackbar(true);
+        setTimeout(() => window.location.reload(), 1000); 
       })
       .catch((error) => {
         console.error('Error updating task:', error);
@@ -55,7 +56,7 @@ const UserTasks = () => {
     <Container maxWidth="md">
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-           Tasks Assigned
+          Tasks Assigned
         </Typography>
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
@@ -69,29 +70,34 @@ const UserTasks = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {tasks.map((task) => (
-                <TableRow key={task._id}>
-                  <TableCell>{task.name}</TableCell>
-                  <TableCell>{task.description}</TableCell>
-                  <TableCell>{task.project.name}</TableCell>
-                  <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <FormControl fullWidth>
-                      <InputLabel>Status</InputLabel>
-                      <Select
-                        value={task.status}
-                        onChange={(event) => handleStatusChange(task._id, event)}
-                      >
-                        <MenuItem value="new">New</MenuItem>
-                        <MenuItem value="in-progress">In-Progress</MenuItem>
-                        <MenuItem value="blocked">Blocked</MenuItem>
-                        <MenuItem value="completed">Completed</MenuItem>
-                        <MenuItem value="not started">Not Started</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {tasks.map((task) => {
+                // Determine background color based on status
+                const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; // light green background for completed status
+                
+                return (
+                  <TableRow key={task._id} sx={{ backgroundColor }}>
+                    <TableCell>{task.name}</TableCell>
+                    <TableCell>{task.description}</TableCell>
+                    <TableCell>{task.project.name}</TableCell>
+                    <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <FormControl fullWidth>
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          value={task.status}
+                          onChange={(event) => handleStatusChange(task._id, event)}
+                        >
+                          <MenuItem value="new">New</MenuItem>
+                          <MenuItem value="in-progress">In-Progress</MenuItem>
+                          <MenuItem value="blocked">Blocked</MenuItem>
+                          <MenuItem value="completed">Completed</MenuItem>
+                          <MenuItem value="not started">Not Started</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
