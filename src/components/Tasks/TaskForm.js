@@ -29,19 +29,17 @@ const TaskForm = () => {
     e.preventDefault();
     dispatch(createTask({ name, description, dueDate, status, owner, project }))
       .then(() => {
-        // Reset form state on successful task creation
         setName('');
         setDescription('');
         setDueDate('');
         setStatus('new');
         setOwner('');
         setProject('');
-        // Show snackbar for success
         setSnackbarOpen(true);
+        window.location.reload();
       })
       .catch((error) => {
         console.error('Error creating task:', error);
-        // Handle error state or display error message to user
       });
   };
 
@@ -129,7 +127,7 @@ const TaskForm = () => {
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000} // Adjust as needed
+        autoHideDuration={6000} 
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >

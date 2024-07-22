@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Container,
   FormControl,
@@ -15,19 +16,18 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import MuiAlert from '@mui/material/Alert';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserTasks, updateTaskStatus } from '../../redux/actions/taskActions';
 
 const UserTasks = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.task.tasks);
-  const token = sessionStorage.getItem('token');
 
-  const [open, setOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity,setSnackbarSeverity]  = useState('success');
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     dispatch(fetchUserTasks(token));
@@ -37,26 +37,25 @@ const UserTasks = () => {
     const status = event.target.value;
     dispatch(updateTaskStatus(taskId, status, token))
       .then(() => {
-        setSnackbarMessage('Task status updated successfully');
-        setSnackbarSeverity('success');  // Set severity to 'success' for green color
-        setOpen(true);
+        setSnackbarMessage('Task updated successfully');
+        setOpenSnackbar(true);
       })
-      .catch(() => {
-        setSnackbarMessage('Failed to update task status');
-        setSnackbarSeverity('error');  // Set severity to 'error' for red color
-        setOpen(true);
+      .catch((error) => {
+        console.error('Error updating task:', error);
+        setSnackbarMessage('Error updating task');
+        setOpenSnackbar(true);
       });
   };
-  
-  const handleClose = () => {
-    setOpen(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
     <Container maxWidth="md">
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          User Tasks
+           Tasks Assigned
         </Typography>
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
@@ -64,6 +63,8 @@ const UserTasks = () => {
               <TableRow>
                 <TableCell>Task Name</TableCell>
                 <TableCell>Description</TableCell>
+                <TableCell>Project Name</TableCell>
+                <TableCell>Due Date</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
@@ -72,6 +73,8 @@ const UserTasks = () => {
                 <TableRow key={task._id}>
                   <TableCell>{task.name}</TableCell>
                   <TableCell>{task.description}</TableCell>
+                  <TableCell>{task.project.name}</TableCell>
+                  <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <FormControl fullWidth>
                       <InputLabel>Status</InputLabel>
@@ -93,15 +96,18 @@ const UserTasks = () => {
           </Table>
         </TableContainer>
       </Box>
+
+      {/* Snackbar for task update confirmation */}
       <Snackbar
-  open={open}
-  autoHideDuration={3000}
-  onClose={handleClose}
->
-  <MuiAlert onClose={handleClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-    {snackbarMessage}
-  </MuiAlert>
-</Snackbar>
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
