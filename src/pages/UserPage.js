@@ -1,23 +1,35 @@
-// UserPage.js
-
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Snackbar,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, updateUser } from '../redux/actions/userActions';
 
 const UserPage = () => {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.user.users); // Assuming your Redux state structure has a 'user' slice with 'users' array
+  const users = useSelector((state) => state.user.users);
 
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar open state
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message
   const token = sessionStorage.getItem('token');
 
   useEffect(() => {
-    dispatch(fetchUsers(token)); // Fetch users when component mounts
+    dispatch(fetchUsers(token));
   }, [dispatch, token]);
 
-  const roles = ['Admin', 'User']; // Replace with actual roles from your application
+  const roles = ['Admin', 'User'];
 
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
@@ -30,65 +42,95 @@ const UserPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    // Find the selected user from the users array
     const selectedUserData = users.find(user => user.username === selectedUser);
     
     if (selectedUserData) {
-      // Prepare the data to be sent to the API
       const userDataToUpdate = {
         _id: selectedUserData._id,
         username: selectedUserData.username,
         email: selectedUserData.email,
         role: selectedRole,
-        
       };
       
-      // Dispatch action to update user
-      dispatch(updateUser(userDataToUpdate, token)); 
-      
-      // Clear selected values after update
-      setSelectedUser('');
-      setSelectedRole('');
+      dispatch(updateUser(userDataToUpdate, token))
+        .then(() => {
+          setSnackbarMessage('User role updated successfully!');
+          setOpenSnackbar(true);
+          setSelectedUser('');
+          setSelectedRole('');
+        })
+        .catch((error) => {
+          setSnackbarMessage('Failed to update user role.');
+          setOpenSnackbar(true);
+        });
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
-    <div>
-      <h1>Users</h1>
-      <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>User</InputLabel>
-          <Select
-            value={selectedUser}
-            onChange={handleUserChange}
-            fullWidth
-          >
-            {users.map((user) => (
-              <MenuItem key={user._id} value={user.username}>
-                {user.username}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Role</InputLabel>
-          <Select
-            value={selectedRole}
-            onChange={handleRoleChange}
-            fullWidth
-          >
-            {roles.map((role) => (
-              <MenuItem key={role} value={role}>
-                {role}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
-          Update Role
-        </Button>
-      </form>
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Manage Users
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel>User</InputLabel>
+                <Select
+                  value={selectedUser}
+                  onChange={handleUserChange}
+                  fullWidth
+                >
+                  {users.map((user) => (
+                    <MenuItem key={user._id} value={user.username}>
+                      {user.username}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel>Role</InputLabel>
+                <Select
+                  value={selectedRole}
+                  onChange={handleRoleChange}
+                  fullWidth
+                >
+                  {roles.map((role) => (
+                    <MenuItem key={role} value={role}>
+                      {role}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Update Role
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
+
+      
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 };
 

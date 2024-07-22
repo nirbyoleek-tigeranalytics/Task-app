@@ -29,6 +29,8 @@ const TaskList = () => {
     dispatch(fetchProjects());
   }, [dispatch]);
 
+  const userOptions = users.filter(user => user.role === 'User');
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -191,7 +193,7 @@ const TaskList = () => {
               value={updatedTaskOwner}
               onChange={(e) => setUpdatedTaskOwner(e.target.value)}
             >
-              {users.map((user) => (
+              {userOptions.map((user) => (
                 <MenuItem key={user._id} value={user._id}>
                   {user.username}
                 </MenuItem>

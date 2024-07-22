@@ -15,6 +15,8 @@ const Login = () => {
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Default to 'success'
   const [role, setRole] = useState('');
 
   const handleChange = (e) => {
@@ -31,19 +33,23 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
-      const { token, role } = res.data; // Extract token and role from response
+      const { token, role } = res.data; 
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('role', role);
-      setRole(role); // Set role for greeting message
-      setOpenSnackbar(true); // Show greeting snackbar
+      setRole(role); 
+      setSnackbarMessage(`Hello ${role}!`); 
+      setSnackbarSeverity('success'); 
+      setOpenSnackbar(true); 
 
-      // Redirect to appropriate page after a short delay
       setTimeout(() => {
         window.location.href = role === 'User' ? '/dashboard' : '/projects';
-      }, 1000); // Delay to allow snackbar to be displayed
+      }, 1000); 
 
     } catch (error) {
       console.error('Login error:', error.message);
+      setSnackbarMessage('Login failed: Incorrect email or password'); 
+      setSnackbarSeverity('error'); 
+      setOpenSnackbar(true); 
     }
   };
 
@@ -52,7 +58,7 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" style={{ marginTop: '120px' }} align="center">
       <Typography variant="h4" align="center" style={{ margin: '20px 0' }}>
         Login
       </Typography>
@@ -103,8 +109,8 @@ const Login = () => {
           maxWidth: '600px' 
         }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%', fontSize: '1.2rem' }}>
-          Hello {role}!
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%', fontSize: '1.2rem' }}>
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Container>

@@ -1,5 +1,7 @@
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
@@ -14,6 +16,10 @@ const Register = () => {
     confirmPassword: '',
   });
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Default to 'success'
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,7 +30,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match");
+      setSnackbarMessage("Passwords don't match");
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
       return;
     }
     try {
@@ -35,18 +43,28 @@ const Register = () => {
       });
 
       // Assuming your backend handles registration and returns a success message or user data
-      console.log('Registration successful:', res.data);
+      setSnackbarMessage('Registration successful!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
 
-      // Optionally, you can redirect to login page after successful registration
-      window.location.href = '/login'; // Replace with your desired redirect path
+      // Redirect to login page after successful registration
+      setTimeout(() => {
+        window.location.href = '/login'; // Replace with your desired redirect path
+      }, 1000); // Delay to allow snackbar to be displayed
     } catch (error) {
       console.error('Registration error:', error.message);
-      // Handle error, such as displaying an error message to the user
+      setSnackbarMessage('Registration failed: ' + (error.response?.data?.message || 'An error occurred'));
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" style={{ marginTop: '120px' }} align="center">
       <Typography variant="h4" align="center" style={{ margin: '20px 0' }}>
         Register
       </Typography>
@@ -102,6 +120,25 @@ const Register = () => {
       <Typography variant="body1" align="center" style={{ marginTop: '20px' }}>
         Already have an account? <Link to="/login">Login here</Link>
       </Typography>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} 
+        sx={{ 
+          position: 'fixed', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '80%', 
+          maxWidth: '600px' 
+        }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%', fontSize: '1.2rem' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

@@ -25,6 +25,8 @@ const TaskForm = () => {
     dispatch(fetchUsers(token));
   }, [dispatch, token]);
 
+  const userOptions = users.filter(user => user.role === 'User');
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createTask({ name, description, dueDate, status, owner, project }))
@@ -92,7 +94,7 @@ const TaskForm = () => {
                   onChange={(e) => setOwner(e.target.value)}
                   required
                 >
-                  {users.map((user) => (
+                  {userOptions.map((user) => (
                     <MenuItem key={user._id} value={user._id}>
                       {user.username}
                     </MenuItem>
