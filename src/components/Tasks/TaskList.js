@@ -106,45 +106,47 @@ const TaskList = () => {
       {tasks.length === 0 ? (
         <Typography variant="body1">No tasks found.</Typography>
       ) : (
-        tasks.map((task) => {
-          // Determine background color based on status
-          const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; // light green background for completed status
-          
-          return (
-            task && (
-              <Card key={task.id} variant="outlined" sx={{ mb: 2, backgroundColor }}>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {task.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Description: {task.description}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Owner: {task.owner?.username || 'No Owner'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Project: {task.project?.name || 'No Project'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Due Date: {task.dueDate}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Status: {task.status}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button onClick={() => handleEditClick(task)} fullWidth color="primary">
-                    Edit
-                  </Button>
-                  <Button onClick={() => handleDeleteClick(task)} fullWidth color="error">
-                    Delete
-                  </Button>
-                </CardActions>
-              </Card>
-            )
-          );
-        })
+        <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}> {/* Set a fixed height and enable scrolling */}
+          {tasks.map((task) => {
+            // Determine background color based on status
+            const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; 
+            
+            return (
+              task && (
+                <Card key={task.id} variant="outlined" sx={{ mb: 2, backgroundColor }}>
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {task.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Description: {task.description}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Owner: {task.owner?.username || 'No Owner'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Project: {task.project?.name || 'No Project'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Due Date: {task.dueDate}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Status: {task.status}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button onClick={() => handleEditClick(task)} fullWidth color="primary">
+                      Edit
+                    </Button>
+                    <Button onClick={() => handleDeleteClick(task)} fullWidth color="error">
+                      Delete
+                    </Button>
+                  </CardActions>
+                </Card>
+              )
+            );
+          })}
+        </div>
       )}
 
       {/* Edit Task Dialog */}

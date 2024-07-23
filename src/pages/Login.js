@@ -42,8 +42,15 @@ const Login = () => {
       setOpenSnackbar(true); 
 
       setTimeout(() => {
-        window.location.href = role === 'User' ? '/dashboard' : '/projects';
-      }, 1000); 
+        if (role === 'User') {
+          window.location.href = '/dashboard';
+        } else if (role === 'Admin') {
+          window.location.href = '/projects';
+        } else if (role === 'Task Manager') {
+          window.location.href = '/tasks';
+        }
+      }, 1000);
+      
 
     } catch (error) {
       console.error('Login error:', error.message);

@@ -40,9 +40,9 @@ const Header = ({ isAdmin }) => {
               <Button color="inherit" component={Link} to="/projects">
                 Projects
               </Button>
-              <Button color="inherit" component={Link} to="/tasks">
+              {/* <Button color="inherit" component={Link} to="/tasks">
                 Tasks
-              </Button>
+              </Button> */}
               <Button color="inherit" component={Link} to="/users">
                 Users
               </Button>

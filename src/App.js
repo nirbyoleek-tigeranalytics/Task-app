@@ -10,24 +10,24 @@ import UserPage from './pages/UserPage';
 
 const App = () => {
   const [userRole, setUserRole] = useState('');
-  const navigate = useNavigate(); // Use the navigate function for redirection
+  const navigate = useNavigate();
 
   useEffect(() => {
     const role = sessionStorage.getItem('role');
+    // const role = 'Task Manager';
     if (role) {
       setUserRole(role);
     } else {
-      // Ensure that unauthenticated users can access login and register pages
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-        navigate('/login'); // Redirect to login if not authenticated and not on login/register pages
+        navigate('/login');
       }
     }
   }, [navigate]);
 
   return (
     <div>
-      {userRole && ( 
-        <Header isAdmin={userRole === 'Admin'} />
+      {userRole && (
+        <Header isAdmin={userRole === 'Admin'} isTaskManager={userRole === 'Task Manager'} />
       )}
       <main>
         <Routes>
@@ -36,9 +36,14 @@ const App = () => {
           {userRole === 'Admin' && (
             <>
               <Route path="/projects" element={<ProjectPage />} />
-              <Route path="/tasks" element={<TaskPage />} />
               <Route path="/users" element={<UserPage />} />
               <Route path="/" element={<ProjectPage />} /> {/* Default route for Admin */}
+            </>
+          )}
+          {userRole === 'Task Manager' && (
+            <>
+              <Route path="/tasks" element={<TaskPage />} />
+              <Route path="/" element={<TaskPage />} /> {/* Default route for Task Manager */}
             </>
           )}
           {userRole === 'User' && (

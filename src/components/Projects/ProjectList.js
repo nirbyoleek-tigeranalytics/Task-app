@@ -58,29 +58,30 @@ const ProjectList = () => {
       {projects.length === 0 ? (
         <Typography variant="body1">No projects found.</Typography>
       ) : (
-        projects.map(project => (
-          <Card key={project._id} variant="outlined" sx={{ mb: 2 }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {project.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Description: {project.description}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Start Date: {new Date(project.startDate).toLocaleDateString()}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                End Date: {new Date(project.endDate).toLocaleDateString()}
-              </Typography>
-              
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={() => handleEditClick(project)}>Edit</Button>
-              <Button size="small" onClick={() => handleDeleteClick(project)}>Delete</Button>
-            </CardActions>
-          </Card>
-        ))
+        <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}> {/* Set a fixed height and enable scrolling */}
+          {projects.map(project => (
+            <Card key={project._id} variant="outlined" sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {project.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  Description: {project.description}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  Start Date: {new Date(project.startDate).toLocaleDateString()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  End Date: {new Date(project.endDate).toLocaleDateString()}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small" onClick={() => handleEditClick(project)}>Edit</Button>
+                <Button size="small" onClick={() => handleDeleteClick(project)}>Delete</Button>
+              </CardActions>
+            </Card>
+          ))}
+        </div>
       )}
 
       {/* Edit Project Dialog */}
@@ -130,7 +131,6 @@ const ProjectList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Project Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleDeleteClose}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>

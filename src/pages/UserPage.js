@@ -29,7 +29,7 @@ const UserPage = () => {
     dispatch(fetchUsers(token));
   }, [dispatch, token]);
 
-  const roles = ['Admin', 'User'];
+  const roles = ['Admin', 'User','Task Manager'];
 
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
