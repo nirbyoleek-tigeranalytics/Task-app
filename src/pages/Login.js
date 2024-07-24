@@ -16,7 +16,7 @@ const Login = () => {
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Default to 'success'
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); 
   const [role, setRole] = useState('');
 
   const handleChange = (e) => {

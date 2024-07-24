@@ -54,13 +54,13 @@ const UserPage = () => {
       
       dispatch(updateUser(userDataToUpdate, token))
         .then(() => {
-          setSnackbarMessage('User role updated successfully!');
+          setSnackbarMessage('Role updated successfully!');
           setOpenSnackbar(true);
           setSelectedUser('');
           setSelectedRole('');
         })
         .catch((error) => {
-          setSnackbarMessage('Failed to update user role.');
+          setSnackbarMessage('Failed to update role.');
           setOpenSnackbar(true);
         });
     }
@@ -73,7 +73,7 @@ const UserPage = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom mb={4}>
           Manage Users
         </Typography>
         <form onSubmit={handleSubmit}>

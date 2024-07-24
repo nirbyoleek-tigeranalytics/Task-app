@@ -1,4 +1,20 @@
-import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjects } from '../../redux/actions/projectActions';
@@ -9,9 +25,10 @@ const TaskList = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.task.tasks);
   const users = useSelector((state) => state.user.users);
-  const projects = useSelector((state) => state.project.projects); // Fetch projects from Redux store
+  const projects = useSelector((state) => state.project.projects);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openCompletedDialog, setOpenCompletedDialog] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
   const [updatedTaskName, setUpdatedTaskName] = useState('');
   const [updatedTaskDescription, setUpdatedTaskDescription] = useState('');
@@ -19,15 +36,23 @@ const TaskList = () => {
   const [updatedTaskOwner, setUpdatedTaskOwner] = useState('');
   const [updatedTaskProject, setUpdatedTaskProject] = useState('');
   const [updatedTaskDueDate, setUpdatedTaskDueDate] = useState('');
+  const [completedTasks, setCompletedTasks] = useState([]);
 
   const statusOptions = ['new', 'in-progress', 'blocked', 'completed', 'not started'];
 
   useEffect(() => {
-    console.log('Dispatching fetch tasks, users, and projects');
     dispatch(fetchTasks());
     dispatch(fetchUsers());
     dispatch(fetchProjects());
   }, [dispatch]);
+
+  useEffect(() => {
+    const completedTasksList = tasks.filter((task) => task.status === 'completed');
+    if (completedTasksList.length > 0) {
+      setCompletedTasks(completedTasksList);
+      setOpenCompletedDialog(true);
+    }
+  }, [tasks]);
 
   const userOptions = users.filter(user => user.role === 'User');
 
@@ -64,6 +89,10 @@ const TaskList = () => {
   const handleDeleteClose = () => {
     setOpenDeleteDialog(false);
     setCurrentTask(null);
+  };
+
+  const handleCompletedDialogClose = () => {
+    setOpenCompletedDialog(false);
   };
 
   const handleUpdateTask = () => {
@@ -106,11 +135,10 @@ const TaskList = () => {
       {tasks.length === 0 ? (
         <Typography variant="body1">No tasks found.</Typography>
       ) : (
-        <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}> {/* Set a fixed height and enable scrolling */}
+        <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
           {tasks.map((task) => {
-            // Determine background color based on status
-            const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; 
-            
+            const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent';
+
             return (
               task && (
                 <Card key={task.id} variant="outlined" sx={{ mb: 2, backgroundColor }}>
@@ -241,6 +269,23 @@ const TaskList = () => {
           <Button onClick={handleDeleteClose}>Cancel</Button>
           <Button onClick={handleConfirmDelete} color="secondary">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Completed Tasks Dialog */}
+      <Dialog open={openCompletedDialog} onClose={handleCompletedDialogClose}>
+        <DialogTitle>Completed Tasks Status</DialogTitle>
+        <DialogContent>
+          {completedTasks.map((task) => (
+            <DialogContentText key={task._id} color="green">
+              Task {task.name} has been marked as completed by {task.owner?.username || 'Unknown'}.
+            </DialogContentText>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCompletedDialogClose} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

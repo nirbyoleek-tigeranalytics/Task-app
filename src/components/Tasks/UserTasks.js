@@ -1,7 +1,13 @@
 import {
   Alert,
   Box,
+  Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
@@ -16,7 +22,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserTasks, updateTaskStatus } from '../../redux/actions/taskActions';
 
@@ -24,8 +30,10 @@ const UserTasks = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.task.tasks);
 
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dueSoonTasks, setDueSoonTasks] = useState([]);
 
   const token = sessionStorage.getItem('token');
 
@@ -33,13 +41,21 @@ const UserTasks = () => {
     dispatch(fetchUserTasks(token));
   }, [dispatch, token]);
 
+  useEffect(() => {
+    const dueSoon = tasks.filter((task) => calculateDueInDays(task.dueDate) < 5 && calculateDueInDays(task.dueDate) >= 0);
+    if (dueSoon.length > 0) {
+      setDueSoonTasks(dueSoon);
+      setOpenDialog(true);
+    }
+  }, [tasks]);
+
   const handleStatusChange = (taskId, event) => {
     const status = event.target.value;
     dispatch(updateTaskStatus(taskId, status, token))
       .then(() => {
         setSnackbarMessage('Task updated successfully');
         setOpenSnackbar(true);
-        setTimeout(() => window.location.reload(), 1000); 
+        setTimeout(() => window.location.reload(), 1000);
       })
       .catch((error) => {
         console.error('Error updating task:', error);
@@ -50,6 +66,18 @@ const UserTasks = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const calculateDueInDays = (dueDate) => {
+    const currentDate = new Date();
+    const dueDateObj = new Date(dueDate);
+    const timeDiff = dueDateObj - currentDate;
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return daysDiff;
   };
 
   return (
@@ -66,20 +94,23 @@ const UserTasks = () => {
                 <TableCell>Description</TableCell>
                 <TableCell>Project Name</TableCell>
                 <TableCell>Due Date</TableCell>
+                <TableCell>Due In</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {tasks.map((task) => {
-                // Determine background color based on status
-                const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent'; // light green background for completed status
-                
+                const dueInDays = calculateDueInDays(task.dueDate);
+                const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent';
+                const dueDateStyle = { color: dueInDays < 5 ? 'red' : 'inherit' };
+
                 return (
                   <TableRow key={task._id} sx={{ backgroundColor }}>
                     <TableCell>{task.name}</TableCell>
                     <TableCell>{task.description}</TableCell>
                     <TableCell>{task.project.name}</TableCell>
-                    <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                    <TableCell >{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                    <TableCell style={dueDateStyle}>{dueInDays} days</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
                         <InputLabel>Status</InputLabel>
@@ -103,7 +134,6 @@ const UserTasks = () => {
         </TableContainer>
       </Box>
 
-      {/* Snackbar for task update confirmation */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -114,6 +144,20 @@ const UserTasks = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Task Due Soon</DialogTitle>
+        <DialogContent>
+          {dueSoonTasks.map((task) => (
+            <DialogContentText key={task._id}>
+              Task "{task.name}" is due in {calculateDueInDays(task.dueDate)} days.
+            </DialogContentText>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
