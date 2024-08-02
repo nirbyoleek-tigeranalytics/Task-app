@@ -101,22 +101,26 @@ const UserTasks = () => {
             <TableBody>
               {tasks.map((task) => {
                 const dueInDays = calculateDueInDays(task.dueDate);
-                const backgroundColor = task.status === 'completed' ? '#d4edda' : 'transparent';
-                const dueDateStyle = { color: dueInDays < 5 ? 'red' : 'inherit' };
+                const isOverdue = dueInDays < 0;
+                const dueDateStyle = { color: isOverdue ? 'red' : dueInDays < 5 ? 'red' : 'inherit' };
+                const backgroundColor = task.status === 'completed' ? '#d4edda' : isOverdue ? '#FFCCCC' : 'transparent';
+
+                const dueDateText = isOverdue ? 'Overdue' : `${dueInDays} days`;
 
                 return (
                   <TableRow key={task._id} sx={{ backgroundColor }}>
-                    <TableCell>{task.name}</TableCell>
+                    <TableCell >{task.name}</TableCell>
                     <TableCell>{task.description}</TableCell>
                     <TableCell>{task.project.name}</TableCell>
-                    <TableCell >{new Date(task.dueDate).toLocaleDateString()}</TableCell>
-                    <TableCell style={dueDateStyle}>{dueInDays} days</TableCell>
+                    <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                    <TableCell style={dueDateStyle}>{dueDateText}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
                         <InputLabel>Status</InputLabel>
                         <Select
                           value={task.status}
                           onChange={(event) => handleStatusChange(task._id, event)}
+                          disabled={isOverdue}
                         >
                           <MenuItem value="new">New</MenuItem>
                           <MenuItem value="in-progress">In-Progress</MenuItem>
